@@ -18,6 +18,8 @@ public class CartItemResponse {
 
     private Date updatedAt;
 
+    public CartItemResponse(){}
+
     public CartItemResponse(Long id, Product product, Integer qty, Double price, Date createdAt, Date updatedAt) {
         this.id = id;
         this.product = product;

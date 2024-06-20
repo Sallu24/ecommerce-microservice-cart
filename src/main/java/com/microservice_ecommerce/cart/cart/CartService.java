@@ -1,6 +1,8 @@
 package com.microservice_ecommerce.cart.cart;
 
 import com.microservice_ecommerce.cart.cart.external.Product;
+import com.microservice_ecommerce.cart.cart.mapper.CartItemMapper;
+import com.microservice_ecommerce.cart.cart.mapper.CartMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -126,27 +128,13 @@ public class CartService {
                                 Product.class
                         );
 
-                        return new CartItemResponse(
-                                cartItem.getId(),
-                                product,
-                                cartItem.getQty(),
-                                cartItem.getPrice(),
-                                cartItem.getCreatedAt(),
-                                cartItem.getUpdatedAt()
-                        );
+                        return CartItemMapper.cartItemResponse(cartItem, product);
                     })
 
                     .toList();
         }
 
-        return new CartResponse(
-                cart.getId(),
-                cart.getUserId(),
-                cart.getTotal(),
-                cartItemResponses,
-                cart.getCreatedAt(),
-                cart.getUpdatedAt()
-        );
+        return CartMapper.cartResponse(cart, cartItemResponses);
     }
 
     public CartItem findById(Long id) {

@@ -10,14 +10,19 @@ import java.util.List;
 public class CartService {
 
     protected CartRepository cartRepository;
+
     protected CartItemRepository cartItemRepository;
+
+    protected RestTemplate restTemplate;
 
     public CartService(
             CartRepository cartRepository,
-            CartItemRepository cartItemRepository
+            CartItemRepository cartItemRepository,
+            RestTemplate restTemplate
     ) {
         this.cartRepository = cartRepository;
         this.cartItemRepository = cartItemRepository;
+        this.restTemplate = restTemplate;
     }
 
     protected CartResponse findByUserId(Long userId) {
@@ -65,9 +70,8 @@ public class CartService {
     private void addItemToCart(CartItemCreationDTO cartItemCreationDTO, Cart userCart) {
         CartItem cartItem = new CartItem();
 
-        RestTemplate restTemplate = new RestTemplate();
         Product product = restTemplate.getForObject(
-                "http://localhost:8093/api/products/" + cartItemCreationDTO.getProduct_id(),
+                "http://PRODUCT:8093/api/products/" + cartItemCreationDTO.getProduct_id(),
                 Product.class
         );
 
@@ -117,9 +121,8 @@ public class CartService {
         if (cartItems != null && !cartItems.isEmpty()) {
             cartItemResponses = cartItems.stream()
                     .map(cartItem -> {
-                        RestTemplate restTemplate = new RestTemplate();
                         Product product = restTemplate.getForObject(
-                                "http://localhost:8093/api/products/" + cartItem.getProductId(),
+                                "http://PRODUCT:8093/api/products/" + cartItem.getProductId(),
                                 Product.class
                         );
 

@@ -1,6 +1,8 @@
 package com.microservice_ecommerce.cart.cart;
 
+import com.microservice_ecommerce.cart.cart.external.Product;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -61,31 +63,38 @@ public class CartService {
     }
 
     private void addItemToCart(CartItemCreationDTO cartItemCreationDTO, Cart userCart) {
-//        CartItem cartItem = new CartItem();
+        CartItem cartItem = new CartItem();
 
-//        Product product = productService.findById(cartItemCreationDTO.getProduct_id());
+        RestTemplate restTemplate = new RestTemplate();
+        Product product = restTemplate.getForObject(
+                "http://localhost:8093/api/products/" + cartItemCreationDTO.getProduct_id(),
+                Product.class
+        );
 
-//        cartItem.setCart(userCart);
-//        cartItem.setProduct(product);
-//        cartItem.setQty(cartItemCreationDTO.getQty());
-//        cartItem.setPrice(product.getPrice());
+        if (product != null) {
+            cartItem.setCart(userCart);
+            cartItem.setProductId(product.getId());
+            cartItem.setQty(cartItemCreationDTO.getQty());
+            cartItem.setPrice(product.getPrice());
 
-//        cartItemRepository.save(cartItem);
+            cartItemRepository.save(cartItem);
+        }
     }
 
     private void updateQty(Long cartItemId, CartItemUpdateDTO cartItemUpdateDTO) {
         CartItem cartItem = findById(cartItemId);
         cartItem.setQty(cartItemUpdateDTO.getQty());
+
         cartItemRepository.save(cartItem);
     }
 
     private void deleteItemFromCart(Long cartItemId) {
         CartItem cartItem = findById(cartItemId);
+
         cartItemRepository.deleteById(cartItem.getId());
     }
 
     private CartResponse convertToDTO(Cart cart) {
-
         if (cart == null) {
             return new CartResponse();
         }
@@ -108,24 +117,15 @@ public class CartService {
         if (cartItems != null && !cartItems.isEmpty()) {
             cartItemResponses = cartItems.stream()
                     .map(cartItem -> {
-//                        ProductResponse productResponse = null;
-//                        Product product = cartItem.getProduct();
-//                        if (product != null) {
-//                            productResponse = new ProductResponse(
-//                                    product.getId(),
-//                                    product.getName(),
-//                                    product.getPrice(),
-//                                    product.getSku(),
-//                                    product.getQty(),
-//                                    product.getInStock(),
-//                                    null,
-//                                    null
-//                            );
-//                        }
+                        RestTemplate restTemplate = new RestTemplate();
+                        Product product = restTemplate.getForObject(
+                                "http://localhost:8093/api/products/" + cartItem.getProductId(),
+                                Product.class
+                        );
 
                         return new CartItemResponse(
                                 cartItem.getId(),
-                                cartItem.getProductId(),
+                                product,
                                 cartItem.getQty(),
                                 cartItem.getPrice(),
                                 cartItem.getCreatedAt(),

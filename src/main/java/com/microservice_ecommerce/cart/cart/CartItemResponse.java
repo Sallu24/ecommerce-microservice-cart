@@ -1,12 +1,14 @@
 package com.microservice_ecommerce.cart.cart;
 
+import com.microservice_ecommerce.cart.cart.external.Product;
+
 import java.util.Date;
 
 public class CartItemResponse {
 
     protected Long id;
 
-    private Long productId;
+    private Product product;
 
     private Integer qty;
 
@@ -16,9 +18,9 @@ public class CartItemResponse {
 
     private Date updatedAt;
 
-    public CartItemResponse(Long id, Long productId, Integer qty, Double price, Date createdAt, Date updatedAt) {
+    public CartItemResponse(Long id, Product product, Integer qty, Double price, Date createdAt, Date updatedAt) {
         this.id = id;
-        this.productId = productId;
+        this.product = product;
         this.qty = qty;
         this.price = price;
         this.createdAt = createdAt;
@@ -33,12 +35,12 @@ public class CartItemResponse {
         this.id = id;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public Integer getQty() {
@@ -77,7 +79,6 @@ public class CartItemResponse {
     public String toString() {
         return "CartItemResponse{" +
                 "id=" + id +
-                ", productId=" + productId +
                 ", qty=" + qty +
                 ", price=" + price +
                 ", createdAt=" + createdAt +

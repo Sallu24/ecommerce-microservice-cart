@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CartService {
@@ -70,6 +71,15 @@ public class CartService {
     }
 
     private void addItemToCart(CartItemCreationDTO cartItemCreationDTO, Cart userCart) {
+        boolean exists = isItemAlreadyInCart(
+                userCart.getCartItems(),
+                cartItemCreationDTO.getProduct_id()
+        );
+
+        if (exists) {
+            throw new CartItemAlreadyExistsException("Item already exists in the cart");
+        }
+
         CartItem cartItem = new CartItem();
 
         Product product = restTemplate.getForObject(
@@ -85,6 +95,16 @@ public class CartService {
 
             cartItemRepository.save(cartItem);
         }
+    }
+
+    private boolean isItemAlreadyInCart(List<CartItem> cartItems, Long productId) {
+        return cartItems
+                .stream()
+                .anyMatch(item ->
+                        Objects.equals(
+                                item.getProductId(), productId
+                        )
+                );
     }
 
     private void updateQty(Long cartItemId, CartItemUpdateDTO cartItemUpdateDTO) {

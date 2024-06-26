@@ -1,5 +1,6 @@
 package com.microservice_ecommerce.cart.exception;
 
+import com.microservice_ecommerce.cart.cart.CartItemAlreadyExistsException;
 import com.microservice_ecommerce.cart.cart.CartItemNotFoundException;
 import com.microservice_ecommerce.cart.cart.CartNotFoundException;
 import org.springframework.http.HttpHeaders;
@@ -42,6 +43,17 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 
     @ExceptionHandler(CartItemNotFoundException.class)
     public final ResponseEntity<ErrorDetails> handleCartItemNotFoundException(Exception ex, WebRequest request) throws Exception {
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                ex.getMessage(),
+                request.getDescription(false)
+        );
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CartItemAlreadyExistsException.class)
+    public final ResponseEntity<ErrorDetails> handleCartItemAlreadyExistsException(Exception ex, WebRequest request) throws Exception {
         ErrorDetails errorDetails = new ErrorDetails(
                 LocalDateTime.now(),
                 ex.getMessage(),

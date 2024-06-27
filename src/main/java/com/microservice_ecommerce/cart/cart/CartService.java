@@ -70,6 +70,11 @@ public class CartService {
         deleteItemFromCart(cartItemId);
     }
 
+    public void emptyCart(OrderMessage orderMessage) {
+        System.out.println("bro salman " + orderMessage.getCartId());
+        cartItemRepository.deleteByCartId(orderMessage.getCartId());
+    }
+
     private void addItemToCart(CartItemCreationDTO cartItemCreationDTO, Cart userCart) {
         boolean exists = isItemAlreadyInCart(
                 userCart.getCartItems(),
